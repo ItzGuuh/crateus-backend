@@ -1,0 +1,1 @@
+rootProject.name = "com.crateus.crateus-backend"
