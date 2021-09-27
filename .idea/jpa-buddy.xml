@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpaBuddyIdeaProjectConfig" ddlActionDbType="postgres">
+    <option name="flywayDirectory" value="db/migration" />
+    <option name="defaultUnitInitialized" value="true" />
+    <option name="sourceModelValue" value="Default" />
+    <option name="targetDbValue" value="ebef33ec-4b8f-4e3c-908c-f99f605235cd" />
+  </component>
+</project>

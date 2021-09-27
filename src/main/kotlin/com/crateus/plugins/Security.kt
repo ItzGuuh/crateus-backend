@@ -1,13 +1,10 @@
 package com.crateus.plugins
 
-import com.auth0.jwk.JwkProvider
-import com.auth0.jwk.JwkProviderBuilder
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.auth.jwt.*
-import io.ktor.application.*
-import java.util.concurrent.TimeUnit
 
 data class SecurityVariables(
     val secret: String,
