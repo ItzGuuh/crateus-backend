@@ -1,4 +1,4 @@
-package com.crateus.repos
+package com.crateus.service
 
 import com.crateus.database.dbQuery
 import com.crateus.models.User
@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import java.util.*
 
-class UserRepository {
+class UserService {
     suspend fun getAllUsers(): List<User> = dbQuery {
         Users.selectAll().map { toUser(it) }
     }

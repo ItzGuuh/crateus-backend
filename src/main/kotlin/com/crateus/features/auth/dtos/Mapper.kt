@@ -1,4 +1,4 @@
-package com.crateus.routes.auth
+package com.crateus.features.auth.dtos
 
 import com.crateus.models.User
 import com.crateus.service.HashManager

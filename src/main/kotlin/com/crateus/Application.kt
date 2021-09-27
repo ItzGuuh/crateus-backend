@@ -1,13 +1,17 @@
 package com.crateus
 
-import com.crateus.database.DatabaseFactory
+
+import com.crateus.database.configureDatabase
 import com.crateus.plugins.configureRouting
 import com.crateus.plugins.configureSecurity
+import com.crateus.plugins.loadModules
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.features.DataConversion
 import io.ktor.serialization.*
 import io.ktor.util.converters.*
+import org.koin.ktor.ext.Koin
+import org.koin.logger.slf4jLogger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,21 +21,23 @@ fun main(args: Array<String>): Unit =
 @Suppress("unused") // application.conf references the main function. This annotation prevents the IDE from marking it as unused.
 fun Application.module() {
     log.info("Initializing server...")
-    log.info("Installing features")
     installFeatures()
     configure()
 }
 
 private fun Application.configure() {
     log.info("Setting up database...")
-    DatabaseFactory.init()
+    configureDatabase()
+
     log.info("Configuring authentication")
-    val securityVariables = configureSecurity()
+    configureSecurity()
+
     log.info("Configuring routes")
-    configureRouting(securityVariables)
+    configureRouting()
 }
 
 private fun Application.installFeatures() {
+    log.info("Installing features")
     install(ContentNegotiation) {
         json()
     }
@@ -51,5 +57,9 @@ private fun Application.installFeatures() {
                 }
             }
         }
+    }
+    install(Koin) {
+        slf4jLogger()
+        loadModules()
     }
 }

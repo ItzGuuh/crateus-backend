@@ -1,4 +1,4 @@
-package com.crateus.routes.helloworld
+package com.crateus.features.helloworld
 
 import io.ktor.application.*
 import io.ktor.auth.*

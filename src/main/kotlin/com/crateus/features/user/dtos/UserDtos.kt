@@ -1,16 +1,12 @@
-package com.crateus.routes.auth
+package com.crateus.features.user.dtos
 
 import kotlinx.serialization.Serializable
 
-object AuthDtos {
-    @Serializable
-    data class LoginDto(val username: String, val password: String)
-
+object UserDtos {
     @Serializable
     data class UserDto(
         val name: String,
         val username: String,
-        val password: String,
         val birthday: Long,
         val email: String,
     )

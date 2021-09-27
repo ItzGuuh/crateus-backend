@@ -4,6 +4,7 @@ val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
 val exposedVersion: String by project
+val koin_version: String by project
 
 plugins {
     application
@@ -23,6 +24,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.21")
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-server-cio:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
@@ -41,11 +43,18 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
 
     // PostgreSQL
-    implementation("org.postgresql:postgresql:42.2.2")
+    implementation("org.postgresql:postgresql:42.2.23.jre7")
 
     implementation("com.zaxxer:HikariCP:5.0.0")
     implementation("org.flywaydb:flyway-core:7.14.1")
 
+
+    // Koin core features
+    implementation("io.insert-koin:koin-core:$koin_version")
+    // Koin for Ktor
+    implementation("io.insert-koin:koin-ktor:$koin_version")
+    // SLF4J Logger
+    implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
 
     // password4j (hashing password)
     implementation ("com.password4j:password4j:1.5.3")
@@ -53,7 +62,8 @@ dependencies {
     // Tests
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
-    implementation(kotlin("stdlib-jdk8"))
+    // Koin test features
+    testImplementation("io.insert-koin:koin-test:$koin_version")
 }
 
 flyway {

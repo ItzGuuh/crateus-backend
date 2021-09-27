@@ -2,35 +2,26 @@ package com.crateus.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.crateus.service.AuthenticationService
+import com.crateus.utils.getSecurityVariables
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.auth.jwt.*
+import org.koin.ktor.ext.inject
 
-data class SecurityVariables(
-    val secret: String,
-    val issuer: String,
-    val audience: String,
-)
 
-fun Application.configureSecurity(): SecurityVariables {
-/*  val secret = environment.config.property("jwt.secret").getString()
-    val issuer = environment.config.property("jwt.issuer").getString()
-    val audience = environment.config.property("jwt.audience").getString()
-    val myRealm = environment.config.property("jwt.realm").getString()
-*/
-    val secret = "secret"
-    val issuer = "http://0.0.0.0:8080/"
-    val audience = "http://0.0.0.0:8080/hello"
-    val myRealm = "Access to 'hello'"
-
+fun Application.configureSecurity() {
     authentication {
         jwt {
-            realm = myRealm
-            verifier(buildJwtVerifier(secret, audience, issuer))
+            realm = this@configureSecurity.getSecurityVariables().realm
+            verifier(buildJwtVerifier(
+                this@configureSecurity.getSecurityVariables().secret,
+                this@configureSecurity.getSecurityVariables().audience,
+                this@configureSecurity.getSecurityVariables().issuer
+            ))
             validate { credential -> validateCredentials(credential)}
         }
     }
-    return SecurityVariables(secret, issuer, audience)
 }
 
 private fun buildJwtVerifier(
