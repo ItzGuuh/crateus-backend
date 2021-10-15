@@ -50,7 +50,7 @@ class DatabaseFactoryImpl: DatabaseFactory {
     }
 }
 
-suspend fun <T> dbQuery(block: () -> T): T =
+suspend inline fun <T> dbQuery(crossinline block: () -> T): T =
     withContext(Dispatchers.IO) {
         transaction { block() }
     }

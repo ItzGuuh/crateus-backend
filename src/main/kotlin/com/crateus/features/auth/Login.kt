@@ -5,6 +5,7 @@ import com.crateus.features.auth.dtos.Mapper
 import com.crateus.service.AuthenticationService
 import com.crateus.service.UserService
 import com.crateus.service.HashManager
+import com.crateus.utils.ResultHandler
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.request.*
@@ -24,21 +25,22 @@ fun Route.loginRoute() {
     val authenticationService: AuthenticationService by inject()
     route("/login") {
         post {
-            val login = call.receive<AuthDtos.LoginDto>()
-
-            // Check username and password
-            UserService().getUserByEmail(login.username).let { user ->
-                if (user == null || HashManager.passwordsDontMatch(password = login.password, hash = user.hash)) {
-                    return@post call.respondText(
-                        "No user found, username or password incorrect!",
-                        status = HttpStatusCode.NotFound
-                    )
-                }
-            }
-            val token = authenticationService.createJwt(application = application, claim = login.username)
             call.run {
-                response.header(HttpHeaders.Authorization, "Bearer $token")
-                respond(HttpStatusCode.OK)
+                receive<AuthDtos.LoginDto>().let { login ->
+                    when (val result = UserService().matchUserByEmail(login.username, login.password)) {
+                        is ResultHandler.Failure -> respondText(
+                            text = result.message,
+                            status = HttpStatusCode.NotFound
+                        )
+                        is ResultHandler.Success -> {
+                            authenticationService.createJwt(application = application, usernameClaim = login.username)
+                                .let { token ->
+                                    response.header(HttpHeaders.Authorization, "Bearer $token")
+                                    respond(HttpStatusCode.OK)
+                                }
+                        }
+                    }
+                }
             }
         }
     }
@@ -49,11 +51,12 @@ fun Route.loginRoute() {
 fun Route.registerUserRoute() {
     route("/register") {
         post {
-            val newUser = call.receive<AuthDtos.UserDto>()
-            val user = Mapper.dtoToUser(newUser)
-            val id = UserService().insertUser(user)
-            val status = if (id._value != null) HttpStatusCode.OK else HttpStatusCode.InternalServerError
-            call.respond(status)
+            call.run {
+                val id =
+                    receive<AuthDtos.UserDto>().let { newUser -> Mapper.dtoToUser(newUser) }.let { user -> UserService().insertUser(user) }
+                val status = if (id._value != null) HttpStatusCode.OK else HttpStatusCode.InternalServerError
+                call.respond(status)
+            }
         }
     }
 }

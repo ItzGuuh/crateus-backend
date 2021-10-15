@@ -11,7 +11,6 @@ import io.ktor.features.DataConversion
 import io.ktor.serialization.*
 import io.ktor.util.converters.*
 import org.koin.ktor.ext.Koin
-import org.koin.logger.slf4jLogger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -59,7 +58,6 @@ private fun Application.installFeatures() {
         }
     }
     install(Koin) {
-        slf4jLogger()
         loadModules()
     }
 }

@@ -43,18 +43,16 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
 
     // PostgreSQL
-    implementation("org.postgresql:postgresql:42.2.23.jre7")
+    implementation("org.postgresql:postgresql:42.2.24.jre7")
 
     implementation("com.zaxxer:HikariCP:5.0.0")
-    implementation("org.flywaydb:flyway-core:7.14.1")
+    implementation("org.flywaydb:flyway-core:8.0.0")
 
 
     // Koin core features
     implementation("io.insert-koin:koin-core:$koin_version")
     // Koin for Ktor
     implementation("io.insert-koin:koin-ktor:$koin_version")
-    // SLF4J Logger
-    implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
 
     // password4j (hashing password)
     implementation ("com.password4j:password4j:1.5.3")
@@ -83,4 +81,8 @@ compileKotlin.kotlinOptions {
 val compileTestKotlin: KotlinCompile by tasks
 compileTestKotlin.kotlinOptions {
     jvmTarget = "1.8"
+}
+
+configurations.all{
+    exclude("org.slf4j", "slf4j-nop")
 }

@@ -11,12 +11,12 @@ import io.ktor.request.*
 import kotlin.test.*
 import io.ktor.server.testing.*
 import com.crateus.plugins.*
+import com.crateus.service.SecurityVariables
 
 class ApplicationTest {
     @Test
     fun testRoot() {
-        val secVar = SecurityVariables(secret = "", issuer = "", audience = "")
-        withTestApplication({ configureRouting(secVar) }) {
+        withTestApplication({ configureRouting() }) {
             handleRequest(HttpMethod.Get, "/").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertEquals("Hello World!", response.content)

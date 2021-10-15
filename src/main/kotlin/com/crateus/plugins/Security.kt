@@ -19,7 +19,7 @@ fun Application.configureSecurity() {
                 this@configureSecurity.getSecurityVariables().audience,
                 this@configureSecurity.getSecurityVariables().issuer
             ))
-            validate { credential -> validateCredentials(credential)}
+            validate { credential -> validateCredentials(credential) }
         }
     }
 }
