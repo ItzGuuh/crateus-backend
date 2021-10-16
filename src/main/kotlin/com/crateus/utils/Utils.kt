@@ -12,7 +12,7 @@ fun Application.getSecurityVariables() = SecurityVariables(
 
 sealed class ResultHandler<out T> {
     class Success<out T>(val value: T) : ResultHandler<T>()
-    class Failure(val throwable: Throwable?=null, val message: String) : ResultHandler<Nothing>()
+    class Failure(val throwable: Throwable, val message: String=throwable.message?: throwable.localizedMessage) : ResultHandler<Nothing>()
 }
 
 inline fun <R> runHandling(block: () -> R): ResultHandler<R> = try {
@@ -20,3 +20,7 @@ inline fun <R> runHandling(block: () -> R): ResultHandler<R> = try {
     } catch (e: Throwable) {
         ResultHandler.Failure(e, e.message?: e.localizedMessage)
     }
+
+interface ToModel<T> {
+    fun toModel(): T
+}

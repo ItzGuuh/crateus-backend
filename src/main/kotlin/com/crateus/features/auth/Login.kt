@@ -1,10 +1,8 @@
 package com.crateus.features.auth
 
 import com.crateus.features.auth.dtos.AuthDtos
-import com.crateus.features.auth.dtos.Mapper
 import com.crateus.service.AuthenticationService
 import com.crateus.service.UserService
-import com.crateus.service.HashManager
 import com.crateus.utils.ResultHandler
 import io.ktor.application.*
 import io.ktor.http.*
@@ -15,19 +13,23 @@ import org.koin.ktor.ext.inject
 
 
 fun Application.loginRoutes() {
+
+    val userService: UserService by inject()
+    val authenticationService: AuthenticationService by inject()
+
     routing {
-        loginRoute()
-        registerUserRoute()
+        loginRoute(userService, authenticationService)
+        registerUserRoute(userService)
     }
 }
 
-fun Route.loginRoute() {
-    val authenticationService: AuthenticationService by inject()
+fun Route.loginRoute(userService: UserService, authenticationService: AuthenticationService) {
+
     route("/login") {
         post {
             call.run {
                 receive<AuthDtos.LoginDto>().let { login ->
-                    when (val result = UserService().matchUserByEmail(login.username, login.password)) {
+                    when (val result = userService.matchUserByEmail(login.username, login.password)) {
                         is ResultHandler.Failure -> respondText(
                             text = result.message,
                             status = HttpStatusCode.NotFound
@@ -48,13 +50,14 @@ fun Route.loginRoute() {
 
 
 
-fun Route.registerUserRoute() {
+fun Route.registerUserRoute(userService: UserService) {
     route("/register") {
         post {
             call.run {
-                val id =
-                    receive<AuthDtos.UserDto>().let { newUser -> Mapper.dtoToUser(newUser) }.let { user -> UserService().insertUser(user) }
-                val status = if (id._value != null) HttpStatusCode.OK else HttpStatusCode.InternalServerError
+                val status = when (receive<AuthDtos.UserDto>().toModel().let { user -> userService.insertUser(user) }){
+                    is ResultHandler.Success -> HttpStatusCode.OK
+                    is ResultHandler.Failure -> HttpStatusCode.InternalServerError
+                }
                 call.respond(status)
             }
         }

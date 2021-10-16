@@ -1,4 +1,4 @@
-package com.crateus.features.user.dtos
+package com.crateus.features.userInfo.dtos
 
 import kotlinx.serialization.Serializable
 

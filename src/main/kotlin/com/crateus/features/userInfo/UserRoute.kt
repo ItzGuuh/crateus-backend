@@ -1,6 +1,6 @@
-package com.crateus.features.user
+package com.crateus.features.userInfo
 
-import com.crateus.features.user.dtos.UserDtos
+import com.crateus.features.userInfo.dtos.UserDtos
 import com.crateus.service.UserService
 import com.crateus.utils.ResultHandler
 import io.ktor.application.*
@@ -24,7 +24,7 @@ fun Route.userRoute() {
         get("{id}") {
             val id = call.parameters["id"].run { UUID.fromString(this) }
             return@get when (val resultHandler = UserService().getUserById(id)) {
-                is ResultHandler.Failure -> call.respondText("User not found",status = HttpStatusCode.NotFound)
+                is ResultHandler.Failure -> call.respondText(resultHandler.message, status = HttpStatusCode.NotFound)
                 is ResultHandler.Success -> resultHandler.value.run {
                     UserDtos.UserDto(name, username, birthday.toInstant(ZoneOffset.UTC).toEpochMilli(), email)
                 }.let { call.respond(HttpStatusCode.OK, it) }

@@ -1,5 +1,9 @@
 package com.crateus.database
 
+import com.crateus.models.Notes
+import com.crateus.models.Users
+import com.crateus.utils.ResultHandler
+import com.crateus.utils.runHandling
 import com.typesafe.config.ConfigFactory
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -9,8 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.statements.InsertStatement
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.ktor.ext.inject
 
@@ -32,8 +35,10 @@ class DatabaseFactoryImpl: DatabaseFactory {
 
     override fun init() {
         Database.connect(hikari())
-        val flyway = Flyway.configure().dataSource(dbUrl, dbUser, dbPassword).load()
-        flyway.migrate()
+        transaction {
+            SchemaUtils.createMissingTablesAndColumns(Users, Notes)
+        }
+//        Flyway.configure().dataSource(dbUrl, dbUser, dbPassword).load().migrate()
     }
 
     private fun hikari(): HikariDataSource {
@@ -50,7 +55,8 @@ class DatabaseFactoryImpl: DatabaseFactory {
     }
 }
 
-suspend inline fun <T> dbQuery(crossinline block: () -> T): T =
+suspend inline fun <T> dbQuery(crossinline block: () -> T): ResultHandler<T> = runHandling {
     withContext(Dispatchers.IO) {
         transaction { block() }
     }
+}

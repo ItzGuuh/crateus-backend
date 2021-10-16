@@ -2,15 +2,15 @@ package com.crateus.models
 
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.`java-time`.CurrentDateTime
-import org.jetbrains.exposed.sql.`java-time`.datetime
+import org.jetbrains.exposed.sql.javatime.CurrentDateTime
+import org.jetbrains.exposed.sql.javatime.datetime
 import java.time.LocalDateTime
 import java.util.*
 
 
-object Users: UUIDTable() {
+object Users : UUIDTable() {
     val name: Column<String> = varchar("name", 30)
-    val username: Column<String> = varchar("username", 20)
+    val username: Column<String> = varchar("username", 20).uniqueIndex()
     val email: Column<String> = varchar("email", 100)
     val hash: Column<String> = varchar("hash", 100)
     val birthday: Column<LocalDateTime> = datetime("birthday")

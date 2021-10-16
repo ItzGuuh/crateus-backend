@@ -2,12 +2,10 @@ package com.crateus.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.crateus.service.AuthenticationService
 import com.crateus.utils.getSecurityVariables
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.auth.jwt.*
-import org.koin.ktor.ext.inject
 
 
 fun Application.configureSecurity() {

@@ -1,8 +1,8 @@
 package com.crateus.plugins
 
 import com.crateus.features.auth.loginRoutes
-import com.crateus.features.helloworld.helloTest
-import com.crateus.features.user.userRoutes
+import com.crateus.features.makeANote.noteRoutes
+import com.crateus.features.userInfo.userRoutes
 import io.ktor.application.*
 import io.ktor.routing.*
 
@@ -16,8 +16,6 @@ fun Application.nonAuthenticatedRoutes() {
 }
 
 fun Application.authenticatedRoutes() {
-    routing {
-        helloTest()
-        userRoutes()
-    }
+    userRoutes()
+    noteRoutes()
 }
