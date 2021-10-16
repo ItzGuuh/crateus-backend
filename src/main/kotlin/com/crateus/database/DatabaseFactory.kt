@@ -11,7 +11,6 @@ import io.ktor.application.*
 import io.ktor.config.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -38,7 +37,6 @@ class DatabaseFactoryImpl: DatabaseFactory {
         transaction {
             SchemaUtils.createMissingTablesAndColumns(Users, Notes)
         }
-//        Flyway.configure().dataSource(dbUrl, dbUser, dbPassword).load().migrate()
     }
 
     private fun hikari(): HikariDataSource {

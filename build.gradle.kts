@@ -10,7 +10,6 @@ plugins {
     application
     kotlin("jvm") version "1.5.30"
     kotlin("plugin.serialization") version "1.5.30"
-    id("org.flywaydb.flyway") version "5.2.4"
 }
 
 group = "com.crateus"
@@ -46,8 +45,6 @@ dependencies {
     implementation("org.postgresql:postgresql:42.2.24.jre7")
 
     implementation("com.zaxxer:HikariCP:5.0.0")
-    implementation("org.flywaydb:flyway-core:8.0.0")
-
 
     // Koin core features
     implementation("io.insert-koin:koin-core:$koin_version")
@@ -64,16 +61,6 @@ dependencies {
     testImplementation("io.insert-koin:koin-test:$koin_version")
 }
 
-flyway {
-    /*url = System.getenv("DB_URL")
-    user = System.getenv("DB_USER")
-    password = System.getenv("DB_PASSWORD")*/
-//    url = System.getenv("postgresql://postgres:Wo9BgkRXnJf8TLWDbz2nJ79b@localhost:5432/crateus")
-    url = System.getenv("jdbc:postgresql://localhost:5432/crateus?user=postgres&password=Wo9BgkRXnJf8TLWDbz2nJ79b")
-    user = System.getenv("postgresql")
-    password = System.getenv("Wo9BgkRXnJf8TLWDbz2nJ79b")
-    baselineOnMigrate=true
-}
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
     jvmTarget = "1.8"
