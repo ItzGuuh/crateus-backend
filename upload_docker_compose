@@ -1,0 +1,13 @@
+1. Pull latest images:
+- docker-compose pull
+
+2. Restart containers:
+- docker-compose up -d --remove-orphans
+
+3. Remove obsolete images:
+- docker image prune
+
+docker-compose pull && docker-compose up -d --build --remove-orphans && docker image prune
+
+docker-compose pull && docker-compose up --force-recreate --build -d && docker image prune -f
+

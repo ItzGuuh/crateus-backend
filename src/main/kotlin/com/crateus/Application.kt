@@ -8,6 +8,7 @@ import com.crateus.plugins.loadModules
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.features.DataConversion
+import io.ktor.routing.*
 import io.ktor.serialization.*
 import io.ktor.util.converters.*
 import org.koin.ktor.ext.Koin
@@ -60,4 +61,5 @@ private fun Application.installFeatures() {
     install(Koin) {
         loadModules()
     }
+    install(IgnoreTrailingSlash)
 }

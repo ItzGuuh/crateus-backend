@@ -1,0 +1,33 @@
+version: '3.1'
+services:
+  pgdatabase:
+    image: postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "crateus_backend" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "Wo9BgkRXnJf8TLWDbz2nJ79b"
+    volumes:
+      - "./databaseConfig/init.sql:/docker-entrypoint-initdb.d/init.sql"
+
+  web:
+    # Path to dockerfile.
+    build: ""
+
+    # Mapping of container port to host
+    ports:
+      - "8080:8080"
+    volumes:
+      - "../src/:/src"
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8081:8081"

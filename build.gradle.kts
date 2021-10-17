@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.jvm.tasks.Jar
 
 val ktor_version: String by project
 val kotlin_version: String by project
@@ -10,6 +11,7 @@ plugins {
     application
     kotlin("jvm") version "1.5.30"
     kotlin("plugin.serialization") version "1.5.30"
+    id("com.github.johnrengelman.shadow") version "7.1.0"
 }
 
 group = "com.crateus"
@@ -72,4 +74,29 @@ compileTestKotlin.kotlinOptions {
 
 configurations.all{
     exclude("org.slf4j", "slf4j-nop")
+}
+
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    archiveBaseName.set("crateus-backend")
+    archiveClassifier.set("")
+    archiveVersion.set("0.1.0")
+}
+
+val fatJar = task("fatJar", type = Jar::class) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveBaseName.set("${project.name}-fat")
+    manifest {
+        attributes["Implementation-Title"] = "Crateus Backend"
+        attributes["Implementation-Version"] = archiveVersion.get()
+        attributes["Main-Class"] = "com.crateus.main"
+
+    }
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+    with(tasks.jar.get() as CopySpec)
+}
+
+tasks {
+    "build" {
+        dependsOn(fatJar)
+    }
 }
